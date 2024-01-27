@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Shapes Calculator</title>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.10.2/brython.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.10.2/brython_stdlib.js"></script>
+</head>
+<body onload="brython_run()">
+    <script type="text/python">
+        import tkinter as tk
+from tkinter import ttk
+import math
+
+def calculate_size():
+    shape = shape_var.get()
+    result_label.config(text="النتيجة: ")
+
+    if shape == "مكعب":
+        side_length = float(side_length_entry.get())
+        volume = side_length ** 3
+        surface_area = 6 * side_length ** 2
+        display_result(volume, surface_area)
+
+    elif shape == "كرة":
+        radius = float(radius_entry.get())
+        volume = (4 / 3) * math.pi * radius ** 3
+        surface_area = 4 * math.pi * radius ** 2
+        display_result(volume, surface_area)
+
+    elif shape == "أسطوانة":
+        radius = float(radius_entry.get())
+        height = float(height_entry.get())
+        volume = math.pi * radius ** 2 * height
+        surface_area = 2 * math.pi * radius * (radius + height)
+        display_result(volume, surface_area)
+
+    elif shape == "مخروط":
+        radius = float(radius_entry.get())
+        height = float(height_entry.get())
+        volume = (1 / 3) * math.pi * radius ** 2 * height
+        surface_area = math.pi * radius * (radius + math.sqrt(radius**2 + height**2))
+        display_result(volume, surface_area)
+
+    elif shape == "هرم":
+        base_length = float(base_length_entry.get())
+        height = float(height_entry.get())
+        volume = (1 / 3) * base_length ** 2 * height
+        surface_area = base_length ** 2 + 2 * base_length * math.sqrt((base_length / 2) ** 2 + height ** 2)
+        display_result(volume, surface_area)
+
+def display_result(volume, surface_area):
+    result_text = f"حجم: {volume:.2f} وحدة³\n"
+    result_text += f"المساحة: {surface_area:.2f} وحدة²"
+    result_label.config(text=f"النتيجة:\n{result_text}")
+
+app = tk.Tk()
+app.title("حاسبة الأشكال الثلاثية الأبعاد")
+app.geometry("500x500")
+
+shape_var = tk.StringVar(value="مكعب")
+calc_var = tk.StringVar(value="حجم")
+
+shape_label = ttk.Label(app, text="اختر الشكل الثلاثي الأبعاد:")
+shape_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+
+shape_combobox = ttk.Combobox(app, textvariable=shape_var, values=["مكعب", "كرة", "أسطوانة", "مخروط", "هرم"])
+shape_combobox.grid(row=0, column=1, padx=10, pady=10, sticky="w")
+
+side_length_label = ttk.Label(app, text="طول الضلع:")
+side_length_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+
+side_length_entry = ttk.Entry(app)
+side_length_entry.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+
+radius_label = ttk.Label(app, text="النصف القطر:")
+radius_label.grid(row=2, column=0, padx=10, pady=10, sticky="w")
+
+radius_entry = ttk.Entry(app)
+radius_entry.grid(row=2, column=1, padx=10, pady=10, sticky="w")
+
+height_label = ttk.Label(app, text="الارتفاع:")
+height_label.grid(row=3, column=0, padx=10, pady=10, sticky="w")
+
+height_entry = ttk.Entry(app)
+height_entry.grid(row=3, column=1, padx=10, pady=10, sticky="w")
+
+base_length_label = ttk.Label(app, text="طول القاعدة:")
+base_length_label.grid(row=4, column=0, padx=10, pady=10, sticky="w")
+
+base_length_entry = ttk.Entry(app)
+base_length_entry.grid(row=4, column=1, padx=10, pady=10, sticky="w")
+
+calculate_button = ttk.Button(app, text="احسب", command=calculate_size)
+calculate_button.grid(row=5, column=0, columnspan=2, pady=10)
+
+toggle_label = ttk.Label(app, text="تبديل:")
+toggle_label.grid(row=6, column=0, padx=10, pady=10, sticky="w")
+
+volume_radio = ttk.Radiobutton(app, text="حجم", variable=calc_var, value="حجم")
+volume_radio.grid(row=6, column=1, padx=10, pady=10, sticky="w")
+
+surface_area_radio = ttk.Radiobutton(app, text="المساحة", variable=calc_var, value="المساحة")
+surface_area_radio.grid(row=6, column=2, padx=10, pady=10, sticky="w")
+
+result_label = ttk.Label(app, text="النتيجة: ", font=("Helvetica", 14))
+result_label.grid(row=7, column=0, columnspan=2, pady=10)
+
+# Function to update the displayed entry fields based on the selected shape
+def update_fields(*args):
+    current_shape = shape_var.get()
+
+    # Hide all entry fields
+    side_length_entry.grid_forget()
+    radius_entry.grid_forget()
+    height_entry.grid_forget()
+    base_length_entry.grid_forget()
+
+    # Display entry fields based on the selected shape
+    if current_shape == "مكعب":
+        side_length_entry.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+    elif current_shape == "كرة":
+        radius_entry.grid(row=2, column=1, padx=10, pady=10, sticky="w")
+    elif current_shape in ["أسطوانة", "مخروط", "هرم"]:
+        radius_entry.grid(row=2, column=1, padx=10, pady=10, sticky="w")
+        height_entry.grid(row=3, column=1, padx=10, pady=10, sticky="w")
+        if current_shape == "هرم":
+            base_length_entry.grid(row=4, column=1, padx=10, pady=10, sticky="w")
+
+# Bind the update_fields function to the shape_var variable
+shape_var.trace_add("write", update_fields)
+
+app.mainloop()
+
+
+        app.mainloop()
+    </script>
+</body>
+</html>
